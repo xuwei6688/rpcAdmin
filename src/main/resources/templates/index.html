@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Title</title>
+    <link rel="stylesheet" href="/layui.css">
+
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+</head>
+
+<body>
+<div class="layui-inline">
+    <input class="layui-input" name="keyword" id="demoReload" autocomplete="off">
+</div>
+<button id="search" class="layui-btn">搜索</button>
+</div>
+
+<table id="demo" class="layui-table" lay-data="{id: 'idTest'}" lay-filter="test"></table>
+
+<script src="/layui.js"></script>
+<script type="text/javascript">
+layui.use('table', function(){
+    var table = layui.table;
+
+    //第一个实例
+    var tableIns = table.render({
+        elem: '#demo'
+        ,height: 312
+        ,url: 'http://localhost:8080/list' //数据接口
+        ,page: true //开启分页
+        ,cols: [[ //表头
+            {field: 'ip', title: 'IP', width:80, sort: true, fixed: 'left'}
+            ,{field: 'port', title: '端口', width:80}
+            ,{field: 'weight', title: '权重', width:80}
+            ,{fixed: 'right', width:150, align:'center', toolbar: '#barDemo'}
+        ]]
+    });
+
+
+    //工具条事件
+    table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+        var data = obj.data; //获得当前行数据
+        var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+
+        if(layEvent === 'detail'){ //查看
+            //do somehing
+            alert("hahah");
+        } else if(layEvent === 'del'){ //删除
+            alert("22222");
+        } else if(layEvent === 'edit'){ //编辑
+            alert("234234234");
+        } else if(layEvent === 'LAYTABLE_TIPS'){
+            layer.alert('Hi，头部工具栏扩展的右侧图标。');
+        }
+    });
+
+
+    $('#search').click(function () {
+        var inputVal = $('#demoReload').val()
+        tableIns.reload({
+            where: {
+                port : inputVal
+            }
+            ,page: {
+                curr: 1
+            }
+        });
+    })
+});
+
+</script>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+
+    <!-- 这里同样支持 laytpl 语法，如： -->
+    {{#  if(d.port === 2){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="check">审核</a>
+    {{#  } }}
+</script>
+</body>
+</html>
